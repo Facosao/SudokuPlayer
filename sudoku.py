@@ -44,8 +44,6 @@ class HighlightCells:
         if selected_row >= 0 and selected_column >= 0:
 
             sel_cell = self.grid[selected_row][selected_column]
-            print("row_high =", selected_row, "col_high =", selected_column)
-            print("cell.value =", sel_cell.value)
 
             if sel_cell.value == 0:
                     self.__set_rule_highlight(sel_cell)

@@ -1,8 +1,8 @@
 import math
-from random import random
 import time
-from typing import Tuple
 import pygame
+from random import random
+from typing import Tuple
 
 import graphics
 import sudoku
@@ -46,11 +46,9 @@ if __name__ == "__main__":
 
     pygame.display.set_caption("Sudoku Player")
     pygame.event.set_blocked(pygame.MOUSEMOTION)
+    pygame.time.set_timer(const.PYGAME_UPDATE_TIMER, 1000)
 
-    UPDATE_TIMER = 10
-    pygame.time.set_timer(pygame.USEREVENT + UPDATE_TIMER, 1000)
-
-    running: bool = True
+    running = True
 
     test_grid = []
 
@@ -60,61 +58,62 @@ if __name__ == "__main__":
 
         for j in range(9):
 
-            cell_value = 0
-            if (random() > 0.5):
-                cell_value = math.floor(random() * 10)
-
+            cell_value = const.DEMO_GAME[i][j]
             new_cell = sudoku.Cell(cell_value, const.COLOR_BLACK,
                                    const.COLOR_WHITE)
 
             test_grid[i].append(new_cell)
 
-    positions = graphics.ObjectPosition(SCREEN_WIDTH, SCREEN_HEIGHT, test_grid)
+    UICoord = graphics.UICoordinates(SCREEN_WIDTH, SCREEN_HEIGHT, test_grid)
 
-    initial_time = math.floor(time.time())
-    clock_str = generate_clock_str(initial_time)
+    InitialTime = math.floor(time.time())
+    ClockStr = generate_clock_str(InitialTime)
 
-    graphics.draw_complete_frame(SudokuSurface, clock_str, positions,
-                                 test_grid)
-
-    initial_time = math.floor(time.time())
+    GameBoard = graphics.DrawBoard(SudokuSurface, UICoord)
+    GameBoard.draw_complete_frame(test_grid, ClockStr)
 
     while running:
 
         event = pygame.event.wait()
-        return_code = const.NO_ACTION
+        SP_return = const.SP_CONTINUE # SP_return = return code
 
         # TODO: Revert to match case with const.UPDATE_TIMER
         if event.type == pygame.QUIT:
-            running = False
+            SP_return = const.SP_QUIT
 
-        elif event.type == (pygame.USEREVENT + UPDATE_TIMER):
+        elif event.type == const.PYGAME_UPDATE_TIMER:
 
-            clock_str = generate_clock_str(initial_time)
-            graphics.draw_clock(SudokuSurface, clock_str)
+            SP_return = GameBoard.draw_clock(generate_clock_str(InitialTime))
 
         elif event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_w:
-                running = False
+                SP_return = const.SP_QUIT
             elif event.key == pygame.K_a:
                 pass
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            
             mouse_button: int = event.button
-
             if (mouse_button == const.LEFT_MOUSE_BUTTON):
-
                 mouse_pos: Tuple[int, int] = event.pos
-                return_code = sudoku.check_click_pos(mouse_pos, test_grid,
-                                                     positions)
+                SP_return = sudoku.check_click_pos(mouse_pos, test_grid, UICoord)
 
         # ----- Process event return code -----
+        while SP_return != const.SP_CONTINUE:
 
-        if return_code == const.NO_ACTION:
-            continue
+            if SP_return == const.SP_REDRAW_CELLS:
 
-        elif return_code == const.REDRAW_CELLS:
-            graphics.draw_cells(SudokuSurface, positions, test_grid)
+                SP_return = GameBoard.draw_cells(test_grid)
+
+            elif SP_return == const.SP_FLIP_BUFFER:
+
+                pygame.display.flip()
+                SP_return = const.SP_CONTINUE
+
+            elif SP_return == const.SP_QUIT:
+
+                running = False
+                SP_return = const.SP_CONTINUE
 
     pygame.quit()

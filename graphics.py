@@ -4,7 +4,7 @@ from typing import Tuple
 
 import constants as const
 
-class ObjectPosition:
+class UICoordinates:
 
     def __init__(self, screen_res_x, screen_res_y, sudoku_matrix) -> None:
         
@@ -14,11 +14,10 @@ class ObjectPosition:
         self.grid_size           = self.get_grid_size()
         self.grid_x, self.grid_y = self.get_grid_position()
 
-        self.sub_grid_size    = ((self.grid_size - 8) // 3)
-        # ((sudoku_x - 2px dividers * 4) // 3 boxes)
-        # ---> Total size of 3x3 sub-grid (3 per row, 9 in total)
+        # Total size of 3x3 sub-grid (3 per row, 9 in total)
+        self.sub_grid_size = ((self.grid_size - const.OUTER_BORDER * 4) // 3)
 
-        self.single_cell_size = math.floor(self.sub_grid_size / 3)
+        self.cell_size = self.sub_grid_size // 3
 
         self.sudoku_matrix: list = sudoku_matrix
 
@@ -38,18 +37,18 @@ class ObjectPosition:
 
     def generate_cell_position(self) -> None:
 
-        # Same as in graphics.draw_empty_grid()
-        R1C1_divider_x = self.grid_x + self.sub_grid_size     + const.THICK_BORDER
-        R1C4_divider_x = self.grid_x + self.sub_grid_size * 2 + const.THICK_BORDER * 2
-        R4C1_divider_y = self.grid_y + self.sub_grid_size     + const.THICK_BORDER 
-        R7C1_divider_y = self.grid_y + self.sub_grid_size * 2 + const.THICK_BORDER * 2
+        # Duplicate from DrawBoard.__draw_empty_grid()
+        R1C1_divider_x = self.grid_x + self.sub_grid_size     + const.OUTER_BORDER
+        R1C4_divider_x = self.grid_x + self.sub_grid_size * 2 + const.OUTER_BORDER * 2
+        R4C1_divider_y = self.grid_y + self.sub_grid_size     + const.OUTER_BORDER 
+        R7C1_divider_y = self.grid_y + self.sub_grid_size * 2 + const.OUTER_BORDER * 2
 
         horizontal_start = [self.grid_x, R1C1_divider_x, R1C4_divider_x]
         vertical_start   = [self.grid_y, R4C1_divider_y, R7C1_divider_y]
 
-        first_cell_offset  = const.THICK_BORDER
-        second_cell_offset =  first_cell_offset + self.single_cell_size + const.THIN_BORDER
-        third_cell_offset  = second_cell_offset + self.single_cell_size + const.THIN_BORDER
+        first_cell_offset  = const.OUTER_BORDER
+        second_cell_offset =  first_cell_offset + self.cell_size + const.CELL_BORDER
+        third_cell_offset  = second_cell_offset + self.cell_size + const.CELL_BORDER
 
         cell_offset = [first_cell_offset, second_cell_offset, third_cell_offset]
 
@@ -60,139 +59,131 @@ class ObjectPosition:
                 self.sudoku_matrix[i][j].pos_y =   vertical_start[i // 3] + cell_offset[i % 3]
 
 
-def draw_empty_grid(window_surface: pygame.Surface,
-                    positions:      ObjectPosition) -> None:
+class DrawBoard:
 
-    #grid_size, grid_size = get_grid_size(screen_resolution)
-    #grid_x, grid_y = get_grid_position(screen_resolution, (grid_size, grid_size))
+    def __init__(self, surface, UI_coord) -> None:
+        
+        self.surface: pygame.Surface = surface
+        self.coord:    UICoordinates = UI_coord
 
-    grid_size = positions.grid_size
-    grid_x, grid_y = positions.grid_x, positions.grid_y
+    def __draw_empty_grid(self) -> None:
 
+        grid_size      = self.coord.grid_size
+        grid_x, grid_y = self.coord.grid_x, self.coord.grid_y
 
-    SudokuGrid = pygame.Rect(grid_x, grid_y, grid_size, grid_size)
-    pygame.draw.rect(window_surface, const.COLOR_GRID_BACKGROUND, SudokuGrid)
+        SudokuGrid = pygame.Rect(grid_x, grid_y, grid_size, grid_size)
+        pygame.draw.rect(self.surface, const.COLOR_GRID_BACKGROUND, SudokuGrid)
 
-    # TODO: Replace raw border constants for named ones
-    upper_border_start = (grid_x, grid_y)
-    upper_border_end   = ((grid_x + grid_size), grid_y)
+        upper_border_start = (grid_x, grid_y)
+        upper_border_end   = ((grid_x + grid_size), grid_y)
 
-    left_border_start = (grid_x, grid_y)
-    left_border_end   = (grid_x, (grid_y + grid_size))
+        left_border_start = (grid_x, grid_y)
+        left_border_end   = (grid_x, (grid_y + grid_size))
 
-    # Check if (-1) is correct
-    right_border_start = ((grid_x + grid_size - 1), grid_y)
-    right_border_end   = ((grid_x + grid_size - 1), (grid_y + grid_size))
+        # Check if (-1) is correct
+        right_border_start = ((grid_x + grid_size - 1), grid_y)
+        right_border_end   = ((grid_x + grid_size - 1), (grid_y + grid_size))
 
-    # Check if (-1) is correct
-    lower_border_start = (grid_x, (grid_y + grid_size - 1))
-    lower_border_end   = ((grid_x + grid_size), (grid_y + grid_size - 1))
+        # Check if (-1) is correct
+        lower_border_start = (grid_x, (grid_y + grid_size - 1))
+        lower_border_end   = ((grid_x + grid_size), (grid_y + grid_size - 1))
 
-    outer_border_coord = [[upper_border_start, upper_border_end],
-                          [ left_border_start,  left_border_end],
-                          [right_border_start, right_border_end],
-                          [lower_border_start, lower_border_end]]
+        grid_border_coord = [[upper_border_start, upper_border_end],
+                             [ left_border_start,  left_border_end],
+                             [right_border_start, right_border_end],
+                             [lower_border_start, lower_border_end]]
 
-    sub_grid = ((grid_size - 8) // 3)
-    # ((sudoku_x - 2px dividers * 4) // 3 boxes)
-    # ---> Total size of 3x3 sub-grid (3 per row, 9 in total)
+        # Total size of 3x3 sub-grid (3 per row, 9 in total)
+        sub_grid = ((grid_size - const.OUTER_BORDER * 4) // 3)
 
-    first_inner_divider_start = ((grid_x + sub_grid + 2), grid_y)
-    first_inner_divider_end   = ((grid_x + sub_grid + 2), (grid_y + grid_size))
+        # R1C1 -> Row 1, Column 1 (from left to right, top to bottom)
+        R1C1_divider_start = ((grid_x + sub_grid + 2), grid_y)
+        R1C1_divider_end   = ((grid_x + sub_grid + 2), (grid_y + grid_size))
 
-    second_inner_divider_start = ((grid_x + sub_grid * 2 + 4), grid_y)
-    second_inner_divider_end   = ((grid_x + sub_grid * 2 + 4), (grid_y + grid_size))
+        R1C4_divider_start = ((grid_x + sub_grid * 2 + 4), grid_y)
+        R1C4_divider_end   = ((grid_x + sub_grid * 2 + 4), (grid_y + grid_size))
 
-    third_inner_divider_start = (grid_x, (grid_y + sub_grid + 2))
-    third_inner_divider_end   = ((grid_x + grid_size), (grid_y + sub_grid + 2))
+        R4C1_divider_start = (grid_x, (grid_y + sub_grid + 2))
+        R4C1_divider_end   = ((grid_x + grid_size), (grid_y + sub_grid + 2))
 
-    fourth_inner_divider_start = (grid_x, (grid_y + sub_grid * 2 + 4))
-    fourth_inner_divider_end   = ((grid_x + grid_size), (grid_y + sub_grid * 2 + 4))
+        R7C1_divider_start = (grid_x, (grid_y + sub_grid * 2 + 4))
+        R7C1_divider_end   = ((grid_x + grid_size), (grid_y + sub_grid * 2 + 4))
 
-    inner_divider_coord = [[ first_inner_divider_start,  first_inner_divider_end],
-                           [second_inner_divider_start, second_inner_divider_end],
-                           [ third_inner_divider_start,  third_inner_divider_end],
-                           [fourth_inner_divider_start, fourth_inner_divider_end]]
+        cell_divider_coord = [[R1C1_divider_start, R1C1_divider_end],
+                              [R1C4_divider_start, R1C4_divider_end],
+                              [R4C1_divider_start, R4C1_divider_end],
+                              [R7C1_divider_start, R7C1_divider_end]]
 
-    for i in range(4):
-        pygame.draw.line(window_surface,
-                         const.COLOR_GRID_DIVIDER,
-                         outer_border_coord[i][0],
-                         outer_border_coord[i][1],
-                         2)
+        for i in range(4):
+            pygame.draw.line(self.surface,
+                             const.COLOR_GRID_DIVIDER,
+                             grid_border_coord[i][0],
+                             grid_border_coord[i][1],
+                             2)
 
-        pygame.draw.line(window_surface,
-                         const.COLOR_GRID_DIVIDER,
-                         inner_divider_coord[i][0],
-                         inner_divider_coord[i][1],
-                         2)
+            pygame.draw.line(self.surface,
+                             const.COLOR_GRID_DIVIDER,
+                             cell_divider_coord[i][0],
+                             cell_divider_coord[i][1],
+                             2)
 
-    pygame.display.flip()
+    def draw_cells(self, grid: list) -> const.SP_FLIP_BUFFER:
 
+        cell_size = self.coord.cell_size
 
-def draw_cells(window_surface: pygame.Surface,
-               positions:      ObjectPosition,
-               sudoku_grid:              list) -> None:
+        for row in grid:
+            for cell in row:
 
-    single_cell_size = positions.single_cell_size
+                digit    = str(cell.value) if cell.value != 0 else " "
+                fg_color = cell.fg_color
+                bg_color = cell.bg_color
 
-    for row in sudoku_grid:
+                x = cell.pos_x
+                y = cell.pos_y
 
-        for cell in row:
+                bg_rect = pygame.Rect(x, y, cell_size, cell_size)
+                pygame.draw.rect(self.surface, bg_color, bg_rect)
+                
+                # Change font size to be dynamic
+                font = pygame.font.SysFont(None, 70)
+                surface = pygame.font.Font.render(font, digit, True,
+                                                  fg_color, bg_color)
 
-            cell_digit    = str(cell.value) if cell.value != 0 else " "
-            cell_fg_color = cell.fg_color
-            cell_bg_color = cell.bg_color
+                font_width, font_height = font.size(digit)
 
-            cell_x = cell.pos_x
-            cell_y = cell.pos_y
+                centered_x = x + ((cell_size - font_width)  // 2)
+                centered_y = y + ((cell_size - font_height) // 2)
 
-            cell_bg_rect = pygame.Rect(cell_x, cell_y, single_cell_size, single_cell_size)
-            pygame.draw.rect(window_surface, cell_bg_color, cell_bg_rect)
+                digit_rect = surface.get_rect(topleft=(centered_x, centered_y),
+                                              width=cell_size,
+                                              height=cell_size)
 
-            cell_font = pygame.font.SysFont(None, 70) # Change font size to be dynamic
-            cell_surface = pygame.font.Font.render(cell_font,
-                                                   cell_digit,
-                                                   True,
-                                                   cell_fg_color,
-                                                   cell_bg_color)
+                self.surface.blit(surface, digit_rect)
 
-            font_x, font_y = cell_font.size(cell_digit)
+        return const.SP_FLIP_BUFFER
 
-            cell_centered_x = cell_x + ((single_cell_size - font_x) // 2)
-            cell_centered_y = cell_y + ((single_cell_size - font_y) // 2)
+    def draw_clock(self, clock_str: str) -> const.SP_FLIP_BUFFER:
 
-            cell_digit_rect = cell_surface.get_rect(topleft=(cell_centered_x,
-                                                             cell_centered_y),
-                                                    width=single_cell_size,
-                                                    height=single_cell_size)
+        # Change font size to be dynamic
+        font = pygame.font.SysFont(None, 40)
+        surface = pygame.font.Font.render(font, clock_str, True,
+                                          const.COLOR_BLACK,
+                                          const.COLOR_WHITE)
+        
+        font_width, font_height = font.size(clock_str)
 
-            window_surface.blit(cell_surface, cell_digit_rect)
+        rect = surface.get_rect(topleft=(0, 0), width=font_width,
+                                                height=font_height)
 
-    pygame.display.flip()
+        self.surface.blit(surface, rect)
 
-def draw_clock(window_surface: pygame.Surface,
-               clock_string:              str) -> None:
+        return const.SP_FLIP_BUFFER
 
-    clock_font = pygame.font.SysFont(None, 40) # Change font size to be dynamic
-    clock_surface = pygame.font.Font.render(clock_font, clock_string, True, const.COLOR_BLACK, const.COLOR_WHITE)
-    
-    clock_size_x, clock_size_y = clock_font.size(clock_string)
+    def draw_complete_frame(self, grid, clock_str) -> const.SP_FLIP_BUFFER:
 
-    clock_rect = clock_surface.get_rect(topleft=(0, 0),
-                                        width=clock_size_x,
-                                        height=clock_size_y)
+        self.surface.fill(const.COLOR_WHITE)
+        self.__draw_empty_grid()
+        self.draw_cells(grid)
+        self.draw_clock(clock_str)
 
-    window_surface.blit(clock_surface, clock_rect)
-    pygame.display.flip()
-
-def draw_complete_frame(window_surface: pygame.Surface,
-                        clock_string:              str,
-                        positions:      ObjectPosition,
-                        sudoku_grid:              list) -> None:
-
-    window_surface.fill(const.COLOR_WHITE)
-    draw_empty_grid(window_surface, positions)
-    draw_cells(window_surface, positions, sudoku_grid)
-    draw_clock(window_surface, clock_string)
-    #pygame.display.flip()
+        return const.SP_FLIP_BUFFER

@@ -60,28 +60,22 @@ def set_rule_highlight(cell_row:    int,
 
 def set_blocked_cells(number:       int,
                       sudoku_grid: list) -> None:
-
-    #if source_cell.value == 0:
-        #set_rule_highlight(cell_row_index,
-        #                   cell_column_index,
-        #                   sudoku_grid)
-    #    pass
                           
     for i in range(9):
         for j in range(9):
         
             cell = sudoku_grid[i][j]
-            
+
             if cell.value == number and cell.value != 0:
                 set_rule_highlight(i, j, sudoku_grid)
+
             elif cell.value != number and cell.value != 0:
                 cell.is_rule_highlighted()
 
 def same_number_highlight(number:       int,
                           sudoku_grid: list) -> None:
 
-    if number == 0:
-        return
+    if number == 0: return
                 
     for row in sudoku_grid:
 
@@ -108,7 +102,13 @@ def check_click_pos(mouse_pos: Tuple[int, int],
                (cell.pos_y < mouse_pos[1] < y_limit):
 
                 reset_all_cells_bg(sudoku_grid)
-                set_blocked_cells(cell.value, sudoku_grid)
+
+                if cell.value == 0:
+                    set_rule_highlight(i, j, sudoku_grid)
+
+                else:
+                    set_blocked_cells(cell.value, sudoku_grid)
+                
                 same_number_highlight(cell.value, sudoku_grid)
                 cell.is_selected()
 

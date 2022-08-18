@@ -46,12 +46,15 @@ class HighlightCells:
             sel_cell = self.grid[selected_row][selected_column]
 
             if sel_cell.value == 0:
-                    self.__set_rule_highlight(sel_cell)
+
+                self.__set_rule_highlight(sel_cell)
+                sel_cell.is_selected()
 
             else:
+
                 self.__set_blocked_cells(sel_cell)
-            
-            self.__same_number_highlight(sel_cell)
+                self.__same_number_highlight(sel_cell)
+                sel_cell.is_selected()
 
         return pygame.event.post(const.EVENT_REDRAW_CELLS)
 
@@ -97,9 +100,6 @@ class HighlightCells:
                     cell.is_rule_highlighted()
 
     def __same_number_highlight(self, selected_cell) -> None:
-
-        if selected_cell.value == 0: 
-            return
                     
         for row in self.grid:
             for cell in row:

@@ -12,8 +12,8 @@ class Cell: # One instance for each cell on the grid (81 in total)
         self.bg_color = bg_color
         self.pos_x = 0
         self.pos_y = 0
-        self.cell_row_index = 0
-        self.cell_column_index = 0
+        self.row_index = 0
+        self.column_index = 0
 
     def is_selected(self) -> None:
         self.bg_color = const.COLOR_SELECTED_CELL
@@ -25,96 +25,86 @@ class Cell: # One instance for each cell on the grid (81 in total)
         self.bg_color = const.COLOR_RULE_HIGHLIGHT
 
     def default_bg_color(self) -> None:
-        self.bg_color = const.COLOR_WHITE 
+        self.bg_color = const.COLOR_WHITE
 
-def reset_all_cells_bg(sudoku_grid) -> None:
 
-    for row in sudoku_grid:
+class HighlightCells:
 
-        for cell in row:
+    def __init__(self, grid: list, selected_cell: list) -> None:
+        self.grid:          list = grid
+        self.selected_cell: list = selected_cell
 
-            cell.default_bg_color()
+    def all_cells(self) -> pygame.event.Event:
 
-def set_rule_highlight(cell_row:    int,
-                       cell_column: int,
-                       sudoku_grid: list) -> None:
+        selected_row    = self.selected_cell[0]
+        selected_column = self.selected_cell[1]
 
-    # Same row
-    for i in range(9):
-        sudoku_grid[cell_row][i].is_rule_highlighted()
-
-    # Same column
-    for i in range(9):
-        sudoku_grid[i][cell_column].is_rule_highlighted()
-
-    # Same 3x3 sub-grid (sg)
-    sg_row_start = (cell_row // 3) * 3
-    sg_row_end   = sg_row_start + 3
-
-    sg_column_start = (cell_column // 3) * 3
-    sg_column_end   = sg_column_start + 3
-
-    for i in range(sg_row_start, sg_row_end):
-        for j in range(sg_column_start, sg_column_end):
-
-            sudoku_grid[i][j].is_rule_highlighted()
-
-def set_blocked_cells(number:       int,
-                      sudoku_grid: list) -> None:
-                          
-    for i in range(9):
-        for j in range(9):
-        
-            cell = sudoku_grid[i][j]
-
-            if cell.value == number and cell.value != 0:
-                set_rule_highlight(i, j, sudoku_grid)
-
-            elif cell.value != number and cell.value != 0:
-                cell.is_rule_highlighted()
-
-def same_number_highlight(number:       int,
-                          sudoku_grid: list) -> None:
-
-    if number == 0: return
-                
-    for row in sudoku_grid:
-
-        for cell in row:
+        self.__reset_all_cells_bg()
             
-            if cell.value == number:
-                cell.same_number_highlight()
+        if selected_row >= 0 and selected_column >= 0:
 
-def check_click_pos(mouse_pos: Tuple[int, int],
-                    sudoku_grid: list,
-                    positions: graphics.UICoordinates) -> int:
-    
-    cell_size = positions.cell_size
+            sel_cell = self.grid[selected_row][selected_column]
+            print("row_high =", selected_row, "col_high =", selected_column)
+            print("cell.value =", sel_cell.value)
 
-    for i in range(9):
-        for j in range(9):
+            if sel_cell.value == 0:
+                    self.__set_rule_highlight(sel_cell)
 
-            cell = sudoku_grid[i][j]
+            else:
+                self.__set_blocked_cells(sel_cell)
+            
+            self.__same_number_highlight(sel_cell)
 
-            x_limit = cell.pos_x + cell_size
-            y_limit = cell.pos_y + cell_size
+        return pygame.event.post(const.EVENT_REDRAW_CELLS)
 
-            if (cell.pos_x < mouse_pos[0] < x_limit) and\
-               (cell.pos_y < mouse_pos[1] < y_limit):
+    def __reset_all_cells_bg(self) -> None:
 
-                reset_all_cells_bg(sudoku_grid)
+        for row in self.grid:
+            for cell in row:
+                cell.default_bg_color()
 
-                if cell.value == 0:
-                    set_rule_highlight(i, j, sudoku_grid)
+    def __set_rule_highlight(self, cell) -> None:
 
-                else:
-                    set_blocked_cells(cell.value, sudoku_grid)
+        # Same row
+        for column in range(9):
+            self.grid[cell.row_index][column].is_rule_highlighted()
+
+        # Same column
+        for row in range(9):
+            self.grid[row][cell.column_index].is_rule_highlighted()
+
+        # Same 3x3 sub-grid (sg)
+        sg_row_start = (cell.row_index // 3) * 3
+        sg_row_end   = sg_row_start + 3
+
+        sg_column_start = (cell.column_index // 3) * 3
+        sg_column_end   = sg_column_start + 3
+
+        for i in range(sg_row_start, sg_row_end):
+            for j in range(sg_column_start, sg_column_end):
+
+                self.grid[i][j].is_rule_highlighted()
+
+    def __set_blocked_cells(self, selected_cell) -> None:
+                          
+        number = selected_cell.value
+
+        for row in self.grid:
+            for cell in row:
+
+                if cell.value == number and cell.value != 0:
+                    self.__set_rule_highlight(cell)
+
+                elif cell.value != number and cell.value != 0:
+                    cell.is_rule_highlighted()
+
+    def __same_number_highlight(self, selected_cell) -> None:
+
+        if selected_cell.value == 0: 
+            return
+                    
+        for row in self.grid:
+            for cell in row:
                 
-                same_number_highlight(cell.value, sudoku_grid)
-                cell.is_selected()
-
-                #return const.SP_REDRAW_CELLS
-                return pygame.event.post(const.EVENT_REDRAW_CELLS)
-
-    #return const.SP_CONTINUE
-    return
+                if cell.value == selected_cell.value:
+                    cell.same_number_highlight()

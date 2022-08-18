@@ -26,14 +26,20 @@ OUTER_BORDER = 2
 LEFT_MOUSE_BUTTON = 1
 
 # Pygame user event ID
-ID_UPDATE_TIMER = pygame.USEREVENT + 2
-ID_REDRAW_CELLS = pygame.USEREVENT + 3
-ID_FLIP_BUFFER  = pygame.USEREVENT + 4
+ID_UPDATE_TIMER       = pygame.USEREVENT + 2
+ID_REDRAW_CELLS       = pygame.USEREVENT + 3
+ID_FLIP_BUFFER        = pygame.USEREVENT + 4
+ID_CLICKED_CELL       = pygame.USEREVENT + 5
+ID_CLICKED_BUTTON     = pygame.USEREVENT + 6
+ID_CLICKED_EMPTY_AREA = pygame.USEREVENT + 7
 
 # Pygame user event object
-EVENT_UPDATE_TIMER = pygame.event.Event(ID_UPDATE_TIMER)
-EVENT_REDRAW_CELLS = pygame.event.Event(ID_REDRAW_CELLS)
-EVENT_FLIP_BUFFER  = pygame.event.Event(ID_FLIP_BUFFER)
+EVENT_UPDATE_TIMER       = pygame.event.Event(ID_UPDATE_TIMER)
+EVENT_REDRAW_CELLS       = pygame.event.Event(ID_REDRAW_CELLS)
+EVENT_FLIP_BUFFER        = pygame.event.Event(ID_FLIP_BUFFER)
+EVENT_CLICKED_CELL       = pygame.event.Event(ID_CLICKED_CELL)
+EVENT_CLICKED_BUTTON     = pygame.event.Event(ID_CLICKED_BUTTON)
+EVENT_CLICKED_EMPTY_AREA = pygame.event.Event(ID_CLICKED_EMPTY_AREA)
 
 # Demo game (Testing only)
 DEMO_GAME = [[0, 0, 6, 2, 0, 0, 0, 0, 5],

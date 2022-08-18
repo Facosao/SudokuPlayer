@@ -7,6 +7,8 @@ import graphics
 import sudoku
 import constants as const
 
+from mouse_handler import MouseHandler
+
 SCREEN_RES  = (SCREEN_WIDTH, SCREEN_HEIGHT) = (720, 576)
 SUDOKU_RECT = (SUDOKU_WIDTH, SUDOKU_HEIGHT) = (509, 509)
 
@@ -31,7 +33,10 @@ def generate_clock_str(initial_time: int) -> str:
         else:
             clock_temp[i] = str(clock_temp[i])
 
-    clock_str = clock_temp[0] + ":" + clock_temp[1] + ":" + clock_temp[2]
+    clock_str = clock_temp[1] + ":" + clock_temp[2]
+
+    if clock_temp[0] != "00":
+        clock_str = clock_temp[0] + ":" + clock_str
 
     return clock_str
 
@@ -61,12 +66,20 @@ if __name__ == "__main__":
             new_cell = sudoku.Cell(cell_value, const.COLOR_BLACK,
                                    const.COLOR_WHITE)
 
+            new_cell.row_index    = i
+            new_cell.column_index = j
+
             test_grid[i].append(new_cell)
 
     UICoord = graphics.UICoordinates(SCREEN_WIDTH, SCREEN_HEIGHT, test_grid)
 
     InitialTime = math.floor(time.time())
     ClockStr = generate_clock_str(InitialTime)
+
+    selected_cell = [-1, -1]
+
+    Mouse_Handler = MouseHandler(test_grid, UICoord, selected_cell)
+    Highlight_Cells = sudoku.HighlightCells(test_grid, selected_cell)
 
     GameBoard = graphics.DrawBoard(SudokuSurface, UICoord)
     GameBoard.draw_complete_frame(test_grid, ClockStr)
@@ -75,7 +88,7 @@ if __name__ == "__main__":
 
         event = pygame.event.wait()
 
-        # ----- Primary pygame events -----
+        # ----- Pygame events -----
 
         if event.type == pygame.QUIT:
             running = False
@@ -83,16 +96,12 @@ if __name__ == "__main__":
         elif event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_w:
-                SP_return = const.SP_QUIT
+                running = False
             elif event.key == pygame.K_a:
                 pass
 
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            
-            if (event.button == const.LEFT_MOUSE_BUTTON):
-                # Keep type declared in function parameter
-                mouse_pos: Tuple[int, int] = event.pos
-                sudoku.check_click_pos(mouse_pos, test_grid, UICoord)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            Mouse_Handler.try_all_regions(event.button, event.pos)
 
         # ----- User events -----
 
@@ -104,5 +113,14 @@ if __name__ == "__main__":
         
         elif event.type == const.ID_FLIP_BUFFER:
             pygame.display.flip()
+
+        elif event.type == const.ID_CLICKED_CELL:
+            Highlight_Cells.all_cells()
+
+        elif event.type == const.ID_CLICKED_BUTTON:
+            pass
+
+        elif event.type == const.ID_CLICKED_EMPTY_AREA:
+            Highlight_Cells.all_cells()
 
     pygame.quit()

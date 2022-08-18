@@ -36,7 +36,7 @@ class UICoordinates:
         return grid_pos_x, grid_pos_y
 
     def generate_cell_position(self) -> None:
-
+        
         # Duplicate from DrawBoard.__draw_empty_grid()
         R1C1_divider_x = self.grid_x + self.sub_grid_size     + const.OUTER_BORDER
         R1C4_divider_x = self.grid_x + self.sub_grid_size * 2 + const.OUTER_BORDER * 2
@@ -127,7 +127,7 @@ class DrawBoard:
                              cell_divider_coord[i][1],
                              2)
 
-    def draw_cells(self, grid: list) -> const.SP_FLIP_BUFFER:
+    def draw_cells(self, grid: list) -> pygame.event.Event:
 
         cell_size = self.coord.cell_size
 
@@ -160,9 +160,10 @@ class DrawBoard:
 
                 self.surface.blit(surface, digit_rect)
 
-        return const.SP_FLIP_BUFFER
+        #return const.SP_FLIP_BUFFER
+        return pygame.event.post(const.EVENT_FLIP_BUFFER)
 
-    def draw_clock(self, clock_str: str) -> const.SP_FLIP_BUFFER:
+    def draw_clock(self, clock_str: str) -> pygame.event.Event:
 
         # Change font size to be dynamic
         font = pygame.font.SysFont(None, 40)
@@ -177,13 +178,15 @@ class DrawBoard:
 
         self.surface.blit(surface, rect)
 
-        return const.SP_FLIP_BUFFER
+        #return const.SP_FLIP_BUFFER
+        return pygame.event.post(const.EVENT_FLIP_BUFFER)
 
-    def draw_complete_frame(self, grid, clock_str) -> const.SP_FLIP_BUFFER:
+    def draw_complete_frame(self, grid, clock_str) -> pygame.event.Event:
 
         self.surface.fill(const.COLOR_WHITE)
         self.__draw_empty_grid()
         self.draw_cells(grid)
         self.draw_clock(clock_str)
 
-        return const.SP_FLIP_BUFFER
+        #return const.SP_FLIP_BUFFER
+        return pygame.event.post(const.EVENT_FLIP_BUFFER)

@@ -1,14 +1,13 @@
 import math
 import time
 import pygame
-from random import random
 from typing import Tuple
 
 import graphics
 import sudoku
 import constants as const
 
-SCREEN_RES = (SCREEN_WIDTH, SCREEN_HEIGHT) = (720, 576)
+SCREEN_RES  = (SCREEN_WIDTH, SCREEN_HEIGHT) = (720, 576)
 SUDOKU_RECT = (SUDOKU_WIDTH, SUDOKU_HEIGHT) = (509, 509)
 
 # DEFAULT GRID SIZE IN PIXELS = 509
@@ -46,7 +45,7 @@ if __name__ == "__main__":
 
     pygame.display.set_caption("Sudoku Player")
     pygame.event.set_blocked(pygame.MOUSEMOTION)
-    pygame.time.set_timer(const.PYGAME_UPDATE_TIMER, 1000)
+    pygame.time.set_timer(const.ID_UPDATE_TIMER, 1000)
 
     running = True
 
@@ -75,15 +74,11 @@ if __name__ == "__main__":
     while running:
 
         event = pygame.event.wait()
-        SP_return = const.SP_CONTINUE # SP_return = return code
 
-        # TODO: Revert to match case with const.UPDATE_TIMER
+        # ----- Primary pygame events -----
+
         if event.type == pygame.QUIT:
-            SP_return = const.SP_QUIT
-
-        elif event.type == const.PYGAME_UPDATE_TIMER:
-
-            SP_return = GameBoard.draw_clock(generate_clock_str(InitialTime))
+            running = False
 
         elif event.type == pygame.KEYDOWN:
 
@@ -94,26 +89,20 @@ if __name__ == "__main__":
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             
-            mouse_button: int = event.button
-            if (mouse_button == const.LEFT_MOUSE_BUTTON):
+            if (event.button == const.LEFT_MOUSE_BUTTON):
+                # Keep type declared in function parameter
                 mouse_pos: Tuple[int, int] = event.pos
-                SP_return = sudoku.check_click_pos(mouse_pos, test_grid, UICoord)
+                sudoku.check_click_pos(mouse_pos, test_grid, UICoord)
 
-        # ----- Process event return code -----
-        while SP_return != const.SP_CONTINUE:
+        # ----- User events -----
 
-            if SP_return == const.SP_REDRAW_CELLS:
+        elif event.type == const.ID_UPDATE_TIMER:
+            GameBoard.draw_clock(generate_clock_str(InitialTime))
 
-                SP_return = GameBoard.draw_cells(test_grid)
-
-            elif SP_return == const.SP_FLIP_BUFFER:
-
-                pygame.display.flip()
-                SP_return = const.SP_CONTINUE
-
-            elif SP_return == const.SP_QUIT:
-
-                running = False
-                SP_return = const.SP_CONTINUE
+        elif event.type == const.ID_REDRAW_CELLS:
+            GameBoard.draw_cells(test_grid)
+        
+        elif event.type == const.ID_FLIP_BUFFER:
+            pygame.display.flip()
 
     pygame.quit()

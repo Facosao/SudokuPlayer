@@ -1,6 +1,7 @@
 from typing import Tuple
 import constants as const
 import graphics
+import pygame
 
 class Cell: # One instance for each cell on the grid (81 in total)
 
@@ -112,6 +113,8 @@ def check_click_pos(mouse_pos: Tuple[int, int],
                 same_number_highlight(cell.value, sudoku_grid)
                 cell.is_selected()
 
-                return const.SP_REDRAW_CELLS
+                #return const.SP_REDRAW_CELLS
+                return pygame.event.post(const.EVENT_REDRAW_CELLS)
 
-    return const.SP_CONTINUE
+    #return const.SP_CONTINUE
+    return

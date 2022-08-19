@@ -8,6 +8,7 @@ import sudoku
 import constants as const
 
 from mouse_handler import MouseHandler
+from keyboard_handler import KeyboardHandler
 
 SCREEN_RES  = (SCREEN_WIDTH, SCREEN_HEIGHT) = (720, 576)
 SUDOKU_RECT = (SUDOKU_WIDTH, SUDOKU_HEIGHT) = (509, 509)
@@ -63,11 +64,13 @@ if __name__ == "__main__":
         for j in range(9):
 
             cell_value = const.DEMO_GAME[i][j]
-            new_cell = sudoku.Cell(cell_value, const.COLOR_BLACK,
-                                   const.COLOR_WHITE)
+            new_cell = sudoku.Cell(cell_value)
 
             new_cell.row_index    = i
             new_cell.column_index = j
+            
+            if cell_value != 0:
+                new_cell.starting = True
 
             test_grid[i].append(new_cell)
 
@@ -80,6 +83,8 @@ if __name__ == "__main__":
 
     Mouse_Handler = MouseHandler(test_grid, UICoord, selected_cell)
     Highlight_Cells = sudoku.HighlightCells(test_grid, selected_cell)
+
+    Keyboard_Handler = KeyboardHandler(test_grid, selected_cell)
 
     GameBoard = graphics.DrawBoard(SudokuSurface, UICoord)
     GameBoard.draw_complete_frame(test_grid, ClockStr)
@@ -94,11 +99,7 @@ if __name__ == "__main__":
             running = False
 
         elif event.type == pygame.KEYDOWN:
-
-            if event.key == pygame.K_w:
-                running = False
-            elif event.key == pygame.K_a:
-                pass
+            Keyboard_Handler.try_all_keys(event.key)
 
         elif event.type == pygame.MOUSEBUTTONUP:
             Mouse_Handler.try_all_regions(event.button, event.pos)

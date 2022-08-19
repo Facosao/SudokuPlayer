@@ -5,15 +5,16 @@ import pygame
 
 class Cell: # One instance for each cell on the grid (81 in total)
 
-    def __init__(self, value, fg_color, bg_color) -> None:
+    def __init__(self, value) -> None:
         
         self.value = value
-        self.fg_color = fg_color
-        self.bg_color = bg_color
+        self.fg_color = const.COLOR_BLACK
+        self.bg_color = const.COLOR_WHITE
         self.pos_x = 0
         self.pos_y = 0
         self.row_index = 0
         self.column_index = 0
+        self.starting = False
 
     def is_selected(self) -> None:
         self.bg_color = const.COLOR_SELECTED_CELL

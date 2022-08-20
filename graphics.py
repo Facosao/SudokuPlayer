@@ -152,7 +152,7 @@ class DrawBoard:
                 font_width, font_height = font.size(digit)
 
                 centered_x = x + ((cell_size - font_width)  // 2)
-                centered_y = y + ((cell_size - font_height) // 2)
+                centered_y = y + ((cell_size - font_height) // 2) + 2
 
                 digit_rect = surface.get_rect(topleft=(centered_x, centered_y),
                                               width=cell_size,

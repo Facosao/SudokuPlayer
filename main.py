@@ -9,6 +9,7 @@ import constants as const
 
 from mouse_handler import MouseHandler
 from keyboard_handler import KeyboardHandler
+from cell_manager import CellManager
 
 SCREEN_RES  = (SCREEN_WIDTH, SCREEN_HEIGHT) = (720, 576)
 SUDOKU_RECT = (SUDOKU_WIDTH, SUDOKU_HEIGHT) = (509, 509)
@@ -86,6 +87,8 @@ if __name__ == "__main__":
 
     Keyboard_Handler = KeyboardHandler(test_grid, selected_cell)
 
+    Cell_Manager = CellManager(test_grid, selected_cell)
+
     GameBoard = graphics.DrawBoard(SudokuSurface, UICoord)
     GameBoard.draw_complete_frame(test_grid, ClockStr)
 
@@ -101,7 +104,10 @@ if __name__ == "__main__":
         elif event.type == pygame.KEYDOWN:
             Keyboard_Handler.try_all_keys(event.key)
 
-        elif event.type == pygame.MOUSEBUTTONUP:
+        elif event.type == pygame.KEYUP:
+            Keyboard_Handler.key_released(event.key)
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             Mouse_Handler.try_all_regions(event.button, event.pos)
 
         # ----- User events -----
@@ -115,7 +121,7 @@ if __name__ == "__main__":
         elif event.type == const.ID_FLIP_BUFFER:
             pygame.display.flip()
 
-        elif event.type == const.ID_CLICKED_CELL:
+        elif event.type == const.ID_SELECTED_CELL:
             Highlight_Cells.all_cells()
 
         elif event.type == const.ID_CLICKED_BUTTON:
@@ -123,5 +129,15 @@ if __name__ == "__main__":
 
         elif event.type == const.ID_CLICKED_EMPTY_AREA:
             Highlight_Cells.all_cells()
+
+        elif event.type == const.ID_EDIT_CELL:
+            Cell_Manager.insert_number(event.number)
+
+        elif event.type == const.ID_DELETE_CELL:
+            Cell_Manager.delete_number()
+
+        elif event.type == const.ID_MOVE_SEL_CELL:
+            Cell_Manager.change_selected_cell(event.direction)
+
 
     pygame.quit()

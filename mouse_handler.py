@@ -17,7 +17,7 @@ class MouseHandler():
 
         # ----------------------------------
         if self.__try_cell_click(mouse_pos):
-            return pygame.event.post(const.EVENT_CLICKED_CELL)
+            return pygame.event.post(const.EVENT_SELECTED_CELL)
 
         # ----------------------------------
         if self.__try_button_click():

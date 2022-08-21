@@ -72,6 +72,7 @@ if __name__ == "__main__":
             
             if cell_value != 0:
                 new_cell.starting = True
+                new_cell.fg_color = const.COLOR_BLACK
 
             test_grid[i].append(new_cell)
 

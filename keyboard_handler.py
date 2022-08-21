@@ -26,6 +26,7 @@ class KeyboardHandler():
 
             if self.pressed_shift == True:
                 # Pencil mark
+                #print("Pressed Shift + %d!" % (num), time.time())
                 num += 10
 
             event = pygame.event.Event(const.ID_EDIT_CELL, number=num)
@@ -37,6 +38,7 @@ class KeyboardHandler():
 
             if self.pressed_shift == True:
                 # Pencil mark
+                #print("Pressed Shift + %d!" % (num), time.time())
                 num += 10
 
             event = pygame.event.Event(const.ID_EDIT_CELL, number=num)

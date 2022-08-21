@@ -16,9 +16,21 @@ class CellManager:
 
         if sel_row >= 0 and sel_col >= 0 and cell.starting == False:
 
-            cell.value    = number
-            cell.fg_color = const.COLOR_USER_NUMBER
-            
+            if number > 9:
+                
+                number -= 10
+                index = number -1
+                value = cell.pencil_marks[index].value
+
+                if value == 0:
+                    cell.pencil_marks[index].value = number
+                else:
+                    cell.pencil_marks[index].value = 0
+
+            else:
+
+                cell.value = number
+                
             pygame.event.post(const.EVENT_SELECTED_CELL)
 
     def delete_number(self):
@@ -31,6 +43,10 @@ class CellManager:
         if sel_row >= 0 and sel_col >= 0 and cell.starting == False:
 
             cell.value = 0
+
+            for i in range(9):
+                cell.pencil_marks[i].value = 0
+
             pygame.event.post(const.EVENT_SELECTED_CELL)
 
     def change_selected_cell(self, direction: str):

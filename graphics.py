@@ -134,7 +134,7 @@ class DrawBoard:
         for row in grid:
             for cell in row:
 
-                digit    = str(cell.value) if cell.value != 0 else " "
+                digit    = str(cell.value)
                 fg_color = cell.fg_color
                 bg_color = cell.bg_color
 
@@ -143,11 +143,14 @@ class DrawBoard:
 
                 bg_rect = pygame.Rect(x, y, cell_size, cell_size)
                 pygame.draw.rect(self.surface, bg_color, bg_rect)
-                
+
+                if cell.value == 0:
+                    self.__draw_pencil_marks(cell)
+                    continue
+
                 # Change font size to be dynamic
                 font = pygame.font.SysFont(None, 70)
-                surface = pygame.font.Font.render(font, digit, True,
-                                                  fg_color, bg_color)
+                surface = font.render(digit, True, fg_color, bg_color)
 
                 font_width, font_height = font.size(digit)
 
@@ -160,16 +163,57 @@ class DrawBoard:
 
                 self.surface.blit(surface, digit_rect)
 
-        #return const.SP_FLIP_BUFFER
+        return pygame.event.post(const.EVENT_FLIP_BUFFER)
+
+    def __draw_pencil_marks(self, cell):
+
+        BG_color = cell.bg_color
+
+        cell_size = self.coord.cell_size
+        mark_size = cell_size // 3
+
+        one_mark_x = cell.pos_x
+        two_mark_x = one_mark_x + mark_size
+        three_mark_x = two_mark_x + mark_size
+
+        one_mark_y = cell.pos_y
+        two_mark_y = one_mark_y + mark_size
+        three_mark_y = two_mark_y + mark_size
+
+        hor_mark = [one_mark_x, two_mark_x, three_mark_x]
+        ver_mark = [one_mark_y, two_mark_y, three_mark_y]
+
+        font = pygame.font.SysFont(None, 27)
+
+        for i in range(9):
+
+            mark = cell.pencil_marks[i]
+            FG_color = mark.FG_color
+
+            digit = str(mark.value) if mark.value != 0 else ""
+            surface = font.render(digit, True, FG_color, BG_color)
+
+            font_width, font_height = font.size(digit)
+
+            left = hor_mark[i % 3]
+            top  = ver_mark[i // 3]
+
+            centered_left = left + ((mark_size - font_width)  // 2)
+            centered_top  =  top + ((mark_size - font_height) // 2) + 1
+
+            rect = surface.get_rect(topleft=(centered_left, centered_top),
+                                    width=font_width,
+                                    height=font_height)
+
+            self.surface.blit(surface, rect)
+
         return pygame.event.post(const.EVENT_FLIP_BUFFER)
 
     def draw_clock(self, clock_str: str) -> pygame.event.Event:
 
         # Change font size to be dynamic
         font = pygame.font.SysFont(None, 40)
-        surface = pygame.font.Font.render(font, clock_str, True,
-                                          const.COLOR_BLACK,
-                                          const.COLOR_WHITE)
+        surface = font.render(clock_str, True, const.COLOR_BLACK, const.COLOR_WHITE)
         
         font_width, font_height = font.size(clock_str)
 

@@ -17,6 +17,7 @@ COLOR_INVALID_NUMBER_BG = (247, 207, 214)
 # Number colors
 COLOR_USER_NUMBER       = (  0, 114, 227)
 COLOR_INVALID_NUMBER_FG = (229,  92, 108)
+COLOR_PENCIL_MARK       = (110, 124, 140)
 
 # Border sizes (outer border and cell border)
 CELL_BORDER  = 1

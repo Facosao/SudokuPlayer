@@ -1,20 +1,29 @@
-from typing import Tuple
 import constants as const
-import graphics
 import pygame
+import time
+
+class PencilMark:
+
+    def __init__(self) -> None:
+        self.value = 0
+        self.FG_color = const.COLOR_PENCIL_MARK
 
 class Cell: # One instance for each cell on the grid (81 in total)
 
     def __init__(self, value) -> None:
         
         self.value = value
-        self.fg_color = const.COLOR_BLACK
+        self.fg_color = const.COLOR_USER_NUMBER
         self.bg_color = const.COLOR_WHITE
         self.pos_x = 0
         self.pos_y = 0
         self.row_index = 0
         self.column_index = 0
         self.starting = False
+        self.pencil_marks = []
+
+        for i in range(9):
+            self.pencil_marks.append(PencilMark())
 
     def is_selected(self) -> None:
         self.bg_color = const.COLOR_SELECTED_CELL
@@ -59,6 +68,8 @@ class HighlightCells:
 
                 self.__check_for_errors(sel_cell)
 
+            self.__check_for_pencil_mark_errors()
+
         return pygame.event.post(const.EVENT_REDRAW_CELLS)
 
     def __reset_all_cells_bg(self) -> None:
@@ -70,6 +81,12 @@ class HighlightCells:
                 
                 if cell.bg_color != const.COLOR_INVALID_NUMBER_BG:
                     cell.default_bg_color()
+
+                if cell.starting == False:
+                    cell.fg_color = const.COLOR_USER_NUMBER
+
+                for mark in cell.pencil_marks:
+                    mark.FG_color = const.COLOR_PENCIL_MARK
 
     def __set_rule_highlight(self, cell) -> None:
 
@@ -162,3 +179,58 @@ class HighlightCells:
 
         if error_detected == True and sel_cell.starting == False:
             sel_cell.fg_color = const.COLOR_INVALID_NUMBER_FG
+
+    def __check_for_pencil_mark_errors(self):
+
+        for row in self.grid:
+            for cell in row:
+
+                for i in range(9):
+
+                    mark = cell.pencil_marks[i]
+
+                    if mark.value == 0:
+                        continue
+
+                    error_detected = False
+
+                    # Same row
+                    for column in range(9):
+
+                        test_cell = self.grid[cell.row_index][column]
+                        
+                        if test_cell.value == mark.value and\
+                        test_cell.column_index != cell.column_index:
+                            
+                            error_detected = True
+
+                    # Same column
+                    for row in range(9):
+
+                        test_cell = self.grid[row][cell.column_index]
+                        
+                        if test_cell.value == mark.value and\
+                        test_cell.row_index != cell.row_index:
+                            
+                            error_detected = True
+
+                    # Same 3x3 sub-grid (sg)
+                    sg_row_start = (cell.row_index // 3) * 3
+                    sg_row_end   = sg_row_start + 3
+
+                    sg_column_start = (cell.column_index // 3) * 3
+                    sg_column_end   = sg_column_start + 3
+
+                    for i in range(sg_row_start, sg_row_end):
+                        for j in range(sg_column_start, sg_column_end):
+
+                            test_cell = self.grid[i][j]
+
+                            if test_cell.value == mark.value and\
+                            test_cell.row_index != cell.row_index:
+
+                                error_detected = True
+
+                    if error_detected == True:
+                        print("Mark error detected! value =", mark.value)
+                        mark.FG_color = const.COLOR_INVALID_NUMBER_FG

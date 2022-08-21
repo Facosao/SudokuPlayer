@@ -140,5 +140,8 @@ if __name__ == "__main__":
         elif event.type == const.ID_MOVE_SEL_CELL:
             Cell_Manager.change_selected_cell(event.direction)
 
+        elif event.type == const.ID_INSERTED_NUMBER:
+            Highlight_Cells.all_cells(event.mark)
+
 
     pygame.quit()

@@ -36,6 +36,7 @@ ID_CLICKED_EMPTY_AREA = pygame.USEREVENT + 7
 ID_DELETE_CELL        = pygame.USEREVENT + 8
 ID_EDIT_CELL          = pygame.USEREVENT + 9
 ID_MOVE_SEL_CELL      = pygame.USEREVENT + 10
+ID_INSERTED_NUMBER    = pygame.USEREVENT + 11
 
 # Pygame user event object
 EVENT_UPDATE_TIMER        = pygame.event.Event(ID_UPDATE_TIMER)
@@ -47,6 +48,7 @@ EVENT_CLICKED_EMPTY_AREA  = pygame.event.Event(ID_CLICKED_EMPTY_AREA)
 EVENT_DELETE_CELL         = pygame.event.Event(ID_DELETE_CELL)
 #EVENT_EDIT_CELL         -> Created from KeyboardHandler
 #EVENT_MOVE_SEL_CELL     -> Created from KeyboardHandler
+#EVENT_INSERTED_NUMBER   -> Created from CellManager
 
 # Demo game (Testing only)
 DEMO_GAME = [[0, 0, 6, 2, 0, 0, 0, 0, 5],

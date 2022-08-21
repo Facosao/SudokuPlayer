@@ -13,6 +13,7 @@ class CellManager:
         sel_col = self.sel_cell[1]
 
         cell = self.grid[sel_row][sel_col]
+        pencil_mark = 0
 
         if sel_row >= 0 and sel_col >= 0 and cell.starting == False:
 
@@ -24,6 +25,7 @@ class CellManager:
 
                 if value == 0:
                     cell.pencil_marks[index].value = number
+                    pencil_mark = number
                 else:
                     cell.pencil_marks[index].value = 0
 
@@ -31,6 +33,7 @@ class CellManager:
 
                 cell.value = number
                 
+            event = pygame.event.Event(const.ID_INSERTED_NUMBER, mark=pencil_mark)
             pygame.event.post(const.EVENT_SELECTED_CELL)
 
     def delete_number(self):

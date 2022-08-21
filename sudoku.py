@@ -44,7 +44,7 @@ class HighlightCells:
         self.grid:          list = grid
         self.selected_cell: list = selected_cell
 
-    def all_cells(self) -> pygame.event.Event:
+    def all_cells(self, mark=0) -> pygame.event.Event:
 
         selected_row    = self.selected_cell[0]
         selected_column = self.selected_cell[1]
@@ -68,7 +68,7 @@ class HighlightCells:
 
                 self.__check_for_errors(sel_cell)
 
-            self.__check_for_pencil_mark_errors()
+            self.__check_for_pencil_mark_errors(sel_cell)
 
         return pygame.event.post(const.EVENT_REDRAW_CELLS)
 
@@ -180,57 +180,57 @@ class HighlightCells:
         if error_detected == True and sel_cell.starting == False:
             sel_cell.fg_color = const.COLOR_INVALID_NUMBER_FG
 
-    def __check_for_pencil_mark_errors(self):
+    def __check_for_pencil_mark_errors(self, cell):
 
-        for row in self.grid:
-            for cell in row:
+        #for row in self.grid:
+        #    for cell in row:
 
-                for i in range(9):
+        for i in range(9):
 
-                    mark = cell.pencil_marks[i]
+            mark = cell.pencil_marks[i]
 
-                    if mark.value == 0:
-                        continue
+            if mark.value == 0:
+                continue
 
-                    error_detected = False
+            error_detected = False
 
-                    # Same row
-                    for column in range(9):
+            # Same row
+            for column in range(9):
 
-                        test_cell = self.grid[cell.row_index][column]
-                        
-                        if test_cell.value == mark.value and\
-                        test_cell.column_index != cell.column_index:
-                            
-                            error_detected = True
+                test_cell = self.grid[cell.row_index][column]
+                
+                if test_cell.value == mark.value and\
+                test_cell.column_index != cell.column_index:
+                    
+                    error_detected = True
 
-                    # Same column
-                    for row in range(9):
+            # Same column
+            for row in range(9):
 
-                        test_cell = self.grid[row][cell.column_index]
-                        
-                        if test_cell.value == mark.value and\
-                        test_cell.row_index != cell.row_index:
-                            
-                            error_detected = True
+                test_cell = self.grid[row][cell.column_index]
+                
+                if test_cell.value == mark.value and\
+                test_cell.row_index != cell.row_index:
+                    
+                    error_detected = True
 
-                    # Same 3x3 sub-grid (sg)
-                    sg_row_start = (cell.row_index // 3) * 3
-                    sg_row_end   = sg_row_start + 3
+            # Same 3x3 sub-grid (sg)
+            sg_row_start = (cell.row_index // 3) * 3
+            sg_row_end   = sg_row_start + 3
 
-                    sg_column_start = (cell.column_index // 3) * 3
-                    sg_column_end   = sg_column_start + 3
+            sg_column_start = (cell.column_index // 3) * 3
+            sg_column_end   = sg_column_start + 3
 
-                    for i in range(sg_row_start, sg_row_end):
-                        for j in range(sg_column_start, sg_column_end):
+            for i in range(sg_row_start, sg_row_end):
+                for j in range(sg_column_start, sg_column_end):
 
-                            test_cell = self.grid[i][j]
+                    test_cell = self.grid[i][j]
 
-                            if test_cell.value == mark.value and\
-                            test_cell.row_index != cell.row_index:
+                    if test_cell.value == mark.value and\
+                    test_cell.row_index != cell.row_index:
 
-                                error_detected = True
+                        error_detected = True
 
-                    if error_detected == True:
-                        print("Mark error detected! value =", mark.value)
-                        mark.FG_color = const.COLOR_INVALID_NUMBER_FG
+            if error_detected == True:
+                print("Mark error detected! value =", mark.value)
+                mark.FG_color = const.COLOR_INVALID_NUMBER_FG

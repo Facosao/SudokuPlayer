@@ -1,10 +1,11 @@
 import pygame
 import constants as const
 
+
 class CellManager:
 
     def __init__(self, grid, selected_cell) -> None:
-        self.grid:     list = grid
+        self.grid: list = grid
         self.sel_cell: list = selected_cell
 
     def insert_number(self, number):
@@ -15,12 +16,12 @@ class CellManager:
         cell = self.grid[sel_row][sel_col]
         pencil_mark = 0
 
-        if sel_row >= 0 and sel_col >= 0 and cell.starting == False:
+        if sel_row >= 0 and sel_col >= 0 and cell.starting is False:
 
             if number > 9:
-                
+
                 number -= 10
-                index = number -1
+                index = number - 1
                 value = cell.pencil_marks[index].value
 
                 if value == 0:
@@ -32,9 +33,9 @@ class CellManager:
             else:
 
                 cell.value = number
-                
+
             event = pygame.event.Event(const.ID_INSERTED_NUMBER, mark=pencil_mark)
-            pygame.event.post(const.EVENT_SELECTED_CELL)
+            pygame.event.post(event)
 
     def delete_number(self):
 
@@ -43,7 +44,7 @@ class CellManager:
 
         cell = self.grid[sel_row][sel_col]
 
-        if sel_row >= 0 and sel_col >= 0 and cell.starting == False:
+        if sel_row >= 0 and sel_col >= 0 and cell.starting is False:
 
             cell.value = 0
 
@@ -63,7 +64,6 @@ class CellManager:
         if direction == "Up":
 
             if self.sel_cell[0] > 0:
-
                 self.sel_cell.pop()
                 self.sel_cell.pop()
                 self.sel_cell.append(sel_row - 1)
@@ -74,7 +74,6 @@ class CellManager:
         elif direction == "Down":
 
             if self.sel_cell[0] < 8:
-
                 self.sel_cell.pop()
                 self.sel_cell.pop()
                 self.sel_cell.append(sel_row + 1)
@@ -85,7 +84,6 @@ class CellManager:
         elif direction == "Left":
 
             if self.sel_cell[1] > 0:
-
                 self.sel_cell.pop()
                 self.sel_cell.append(sel_col - 1)
 
@@ -94,7 +92,6 @@ class CellManager:
         elif direction == "Right":
 
             if self.sel_cell[1] < 8:
-
                 self.sel_cell.pop()
                 self.sel_cell.append(sel_col + 1)
 

@@ -11,29 +11,25 @@ from mouse_handler import MouseHandler
 from keyboard_handler import KeyboardHandler
 from cell_manager import CellManager
 
-SCREEN_RES  = (SCREEN_WIDTH, SCREEN_HEIGHT) = (720, 576)
+SCREEN_RES = (SCREEN_WIDTH, SCREEN_HEIGHT) = (720, 576)
 SUDOKU_RECT = (SUDOKU_WIDTH, SUDOKU_HEIGHT) = (509, 509)
+
 
 # DEFAULT GRID SIZE IN PIXELS = 509
 
 
 def generate_clock_str(initial_time: int) -> str:
-
     current_time = math.floor(time.time())
     current_time -= initial_time
 
-    clock_temp = []
+    clock_temp = [current_time // 3600, current_time // 60, current_time % 60]
 
-    clock_temp.append(current_time // 3600)
-    clock_temp.append(current_time // 60)
-    clock_temp.append(current_time % 60)
-    
-    for i in range(3):
-        
-        if (clock_temp[i] < 10):
-            clock_temp[i] = "0" + str(clock_temp[i])
+    for j in range(3):
+
+        if clock_temp[j] < 10:
+            clock_temp[j] = "0" + str(clock_temp[j])
         else:
-            clock_temp[i] = str(clock_temp[i])
+            clock_temp[j] = str(clock_temp[j])
 
     clock_str = clock_temp[1] + ":" + clock_temp[2]
 
@@ -67,9 +63,9 @@ if __name__ == "__main__":
             cell_value = const.DEMO_GAME[i][j]
             new_cell = sudoku.Cell(cell_value)
 
-            new_cell.row_index    = i
+            new_cell.row_index = i
             new_cell.column_index = j
-            
+
             if cell_value != 0:
                 new_cell.starting = True
                 new_cell.fg_color = const.COLOR_BLACK
@@ -118,7 +114,7 @@ if __name__ == "__main__":
 
         elif event.type == const.ID_REDRAW_CELLS:
             GameBoard.draw_cells(test_grid)
-        
+
         elif event.type == const.ID_FLIP_BUFFER:
             pygame.display.flip()
 
@@ -142,6 +138,5 @@ if __name__ == "__main__":
 
         elif event.type == const.ID_INSERTED_NUMBER:
             Highlight_Cells.all_cells(event.mark)
-
 
     pygame.quit()

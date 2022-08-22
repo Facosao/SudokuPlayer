@@ -2,7 +2,8 @@ import pygame
 import time
 import constants as const
 
-class KeyboardHandler():
+
+class KeyboardHandler:
 
     def __init__(self, grid, selected_cell) -> None:
         self.grid:          list = grid
@@ -24,7 +25,7 @@ class KeyboardHandler():
 
             num = key - pygame.K_0
 
-            if self.pressed_shift == True:
+            if self.pressed_shift:
                 # Pencil mark
                 #print("Pressed Shift + %d!" % (num), time.time())
                 num += 10
@@ -36,7 +37,7 @@ class KeyboardHandler():
 
             num = key - pygame.K_KP0 + 10
 
-            if self.pressed_shift == True:
+            if self.pressed_shift:
                 # Pencil mark
                 #print("Pressed Shift + %d!" % (num), time.time())
                 num += 10
@@ -83,5 +84,5 @@ class KeyboardHandler():
 
         elif key == pygame.K_z:
 
-            if self.pressed_ctrl == True:
+            if self.pressed_ctrl:
                 return print("Pressed Ctrl+Z!", time.time())

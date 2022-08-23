@@ -1,3 +1,5 @@
+import copy
+
 import pygame
 import constants as const
 
@@ -5,6 +7,7 @@ import constants as const
 class CellManager:
 
     def __init__(self, grid, selected_cell) -> None:
+
         self.grid: list = grid
         self.sel_cell: list = selected_cell
 
@@ -14,11 +17,16 @@ class CellManager:
         sel_col = self.sel_cell[1]
 
         cell = self.grid[sel_row][sel_col]
+        #print("inserted number =", cell.value)
         pencil_mark = 0
 
         if sel_row >= 0 and sel_col >= 0 and cell.starting is False:
 
-            if number > 9:
+            old_cell = copy.deepcopy(cell)
+            undo_event = pygame.event.Event(const.ID_UNDO_PUSH, old_cell=old_cell)
+            pygame.event.post(undo_event)
+
+            if number > 9:  # Pencil Mark
 
                 number -= 10
                 index = number - 1
@@ -64,35 +72,27 @@ class CellManager:
         if direction == "Up":
 
             if self.sel_cell[0] > 0:
-                self.sel_cell.pop()
-                self.sel_cell.pop()
-                self.sel_cell.append(sel_row - 1)
-                self.sel_cell.append(sel_col)
 
+                self.sel_cell[0] = sel_row - 1
                 pygame.event.post(const.EVENT_SELECTED_CELL)
 
         elif direction == "Down":
 
             if self.sel_cell[0] < 8:
-                self.sel_cell.pop()
-                self.sel_cell.pop()
-                self.sel_cell.append(sel_row + 1)
-                self.sel_cell.append(sel_col)
 
+                self.sel_cell[0] = sel_row + 1
                 pygame.event.post(const.EVENT_SELECTED_CELL)
 
         elif direction == "Left":
 
             if self.sel_cell[1] > 0:
-                self.sel_cell.pop()
-                self.sel_cell.append(sel_col - 1)
 
+                self.sel_cell[1] = sel_col - 1
                 pygame.event.post(const.EVENT_SELECTED_CELL)
 
         elif direction == "Right":
 
             if self.sel_cell[1] < 8:
-                self.sel_cell.pop()
-                self.sel_cell.append(sel_col + 1)
 
+                self.sel_cell[1] = sel_col + 1
                 pygame.event.post(const.EVENT_SELECTED_CELL)

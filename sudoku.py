@@ -86,7 +86,7 @@ class HighlightCells:
                 if cell.bg_color != const.COLOR_INVALID_NUMBER_BG:
                     cell.default_bg_color()
 
-                if not cell.starting:
+                if not cell.starting and cell.fg_color != const.COLOR_INVALID_NUMBER_FG:
                     cell.fg_color = const.COLOR_USER_NUMBER
 
                 for mark in cell.pencil_marks:
@@ -181,7 +181,6 @@ class HighlightCells:
 
     def __check_inserted_mark(self, cell, mark):
 
-        print("Starting mark check! mark =", mark)
         error_detected = False
 
         # Same row
@@ -214,13 +213,11 @@ class HighlightCells:
                     error_detected = True
 
         if error_detected:
-            print("Mark error detected! mark =", mark)
             index = mark - 1
             cell.pencil_marks[index].FG_color = const.COLOR_INVALID_NUMBER_FG
 
     def __check_marks_against_number(self, cell):
 
-        print("Starting marks check against number!")
         index = cell.value - 1
 
         # Same row

@@ -85,4 +85,5 @@ class KeyboardHandler:
         elif key == pygame.K_z:
 
             if self.pressed_ctrl:
-                return print("Pressed Ctrl+Z!", time.time())
+                #print("Pressed Ctrl+Z!", time.time())
+                pygame.event.post(const.EVENT_UNDO_POP)

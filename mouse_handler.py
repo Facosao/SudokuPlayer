@@ -37,39 +37,17 @@ class MouseHandler:
                 x_limit = cell.pos_x + cell_size
                 y_limit = cell.pos_y + cell_size
 
-                if (cell.pos_x < mouse_pos[0] < x_limit) and \
-                        (cell.pos_y < mouse_pos[1] < y_limit):
+                if (cell.pos_x < mouse_pos[0] < x_limit) and (cell.pos_y < mouse_pos[1] < y_limit):
 
                     # Cell has been clicked
 
-                    self.selected_cell.pop()
-                    self.selected_cell.pop()
-
-                    self.selected_cell.append(cell.row_index)
-                    self.selected_cell.append(cell.column_index)
+                    self.selected_cell[0] = cell.row_index
+                    self.selected_cell[1] = cell.column_index
 
                     return True
 
-                elif (cell.pos_x < mouse_pos[0] - 2 < x_limit) and \
-                        (cell.pos_y < mouse_pos[1] - 2 < y_limit):
-
-                    # QOL feature
-                    # Cell border or outer border has been clicked
-                    # NOTE: Doesn't work for the left outer border
-
-                    self.selected_cell.pop()
-                    self.selected_cell.pop()
-
-                    self.selected_cell.append(cell.row_index)
-                    self.selected_cell.append(cell.column_index)
-
-                    return True
-
-        self.selected_cell.pop()
-        self.selected_cell.pop()
-
-        self.selected_cell.append(-1)
-        self.selected_cell.append(-1)
+        self.selected_cell[0] = -1
+        self.selected_cell[1] = -1
 
         return False
 

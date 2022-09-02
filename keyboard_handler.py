@@ -6,18 +6,15 @@ import constants as const
 class KeyboardHandler:
 
     def __init__(self, grid, selected_cell) -> None:
-        self.grid:          list = grid
-        self.sel_cell:      list = selected_cell
-        self.pressed_ctrl:  bool = False
-        self.pressed_shift: bool = False
+        self.grid:         list = grid
+        self.sel_cell:     list = selected_cell
+        self.pressed_ctrl: bool = False
+        self.toggle_shift: bool = False
 
     def key_released(self, key):
 
         if key == pygame.K_LCTRL or key == pygame.K_RCTRL:
             self.pressed_ctrl = False
-
-        elif key == pygame.K_LSHIFT or key == pygame.K_RSHIFT:
-            self.pressed_shift = False
 
     def try_all_keys(self, key):
 
@@ -25,7 +22,7 @@ class KeyboardHandler:
 
             num = key - pygame.K_0
 
-            if self.pressed_shift:
+            if self.toggle_shift:
                 # Pencil mark
                 #print("Pressed Shift + %d!" % (num), time.time())
                 num += 10
@@ -37,7 +34,7 @@ class KeyboardHandler:
 
             num = key - pygame.K_KP0 + 10
 
-            if self.pressed_shift:
+            if self.toggle_shift:
                 # Pencil mark
                 #print("Pressed Shift + %d!" % (num), time.time())
                 num += 10
@@ -80,7 +77,7 @@ class KeyboardHandler:
 
         elif key == pygame.K_LSHIFT or key == pygame.K_RSHIFT:
 
-            self.pressed_shift = True
+            self.toggle_shift = True if self.toggle_shift is False else False
 
         elif key == pygame.K_z:
 

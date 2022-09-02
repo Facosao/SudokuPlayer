@@ -64,6 +64,8 @@ class DrawBoard:
         self.surface: pygame.Surface = surface
         self.coord: UICoordinates = ui_coord
 
+        self.font_path: str = "SourceSansPro-Regular.ttf"
+
     def __draw_empty_grid(self) -> None:
 
         grid_size = self.coord.grid_size
@@ -147,13 +149,13 @@ class DrawBoard:
                     continue
 
                 # Change font size to be dynamic
-                font = pygame.font.SysFont(None, 70)
+                font = pygame.font.Font(self.font_path, 43)
                 surface = font.render(digit, True, fg_color, bg_color)
 
                 font_width, font_height = font.size(digit)
 
                 centered_x = x + ((cell_size - font_width) // 2)
-                centered_y = y + ((cell_size - font_height) // 2) + 2
+                centered_y = y + ((cell_size - font_height) // 2)  # + 2
 
                 digit_rect = surface.get_rect(topleft=(centered_x, centered_y),
                                               width=cell_size,
@@ -181,7 +183,7 @@ class DrawBoard:
         hor_mark = [one_mark_x, two_mark_x, three_mark_x]
         ver_mark = [one_mark_y, two_mark_y, three_mark_y]
 
-        font = pygame.font.SysFont(None, 27)
+        font = pygame.font.Font(self.font_path, 15)
 
         for i in range(9):
             mark = cell.pencil_marks[i]
@@ -207,7 +209,7 @@ class DrawBoard:
     def draw_clock(self, clock_str: str):
 
         # Change font size to be dynamic
-        font = pygame.font.SysFont(None, 40)
+        font = pygame.font.Font(self.font_path, 40)
         surface = font.render(clock_str, True, const.COLOR_BLACK, const.COLOR_WHITE)
 
         font_width, font_height = font.size(clock_str)

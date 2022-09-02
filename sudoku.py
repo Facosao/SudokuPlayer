@@ -45,6 +45,11 @@ class HighlightCells:
         self.grid: list = grid
         self.selected_cell: list = selected_cell
 
+    ''' 
+        When a cell is deleted, create a event to restore
+        regular colors to the rule affected numbers and pencil marks
+    '''
+
     def all_cells(self, mark=0) -> pygame.event.Event:
 
         selected_row = self.selected_cell[0]
@@ -178,9 +183,13 @@ class HighlightCells:
 
         if error_detected is True and sel_cell.starting is False:
             sel_cell.fg_color = const.COLOR_INVALID_NUMBER_FG
+        elif error_detected is False and sel_cell.starting is False:
+            sel_cell.fg_color = const.COLOR_USER_NUMBER
 
     def __check_inserted_mark(self, cell, mark):
 
+        index = mark - 1
+        cell.pencil_marks[index].FG_color = const.COLOR_PENCIL_MARK
         error_detected = False
 
         # Same row
@@ -213,7 +222,6 @@ class HighlightCells:
                     error_detected = True
 
         if error_detected:
-            index = mark - 1
             cell.pencil_marks[index].FG_color = const.COLOR_INVALID_NUMBER_FG
 
     def __check_marks_against_number(self, cell):
@@ -226,6 +234,8 @@ class HighlightCells:
 
             if check_mark.value == cell.value:
                 check_mark.FG_color = const.COLOR_INVALID_NUMBER_FG
+            else:
+                check_mark.FG_color = const.COLOR_PENCIL_MARK
 
         # Same column
         for row in range(9):
@@ -233,6 +243,8 @@ class HighlightCells:
 
             if check_mark.value == cell.value:
                 check_mark.FG_color = const.COLOR_INVALID_NUMBER_FG
+            else:
+                check_mark.FG_color = const.COLOR_PENCIL_MARK
 
         # Same 3x3 sub-grid (sg)
         sg_row_start = (cell.row_index // 3) * 3
@@ -248,7 +260,10 @@ class HighlightCells:
 
                 if check_mark.value == cell.value:
                     check_mark.FG_color = const.COLOR_INVALID_NUMBER_FG
+                else:
+                    check_mark.FG_color = const.COLOR_PENCIL_MARK
 
+    # Currently unused
     def __check_for_pencil_mark_errors(self, cell):
 
         # for row in self.grid:

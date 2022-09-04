@@ -77,7 +77,14 @@ class KeyboardHandler:
 
         elif key == pygame.K_LSHIFT or key == pygame.K_RSHIFT:
 
-            self.toggle_shift = True if self.toggle_shift is False else False
+            if self.toggle_shift is True:
+                self.toggle_shift = False
+                toggle_event = pygame.event.Event(const.ID_DRAW_TOGGLE, is_active=False)
+            else:
+                self.toggle_shift = True
+                toggle_event = pygame.event.Event(const.ID_DRAW_TOGGLE, is_active=True)
+
+            pygame.event.post(toggle_event)
 
         elif key == pygame.K_z:
 

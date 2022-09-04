@@ -34,6 +34,7 @@ if __name__ == "__main__":
     Keyboard_Handler = KeyboardHandler(test_grid, selected_cell)
     Cell_Manager = CellManager(test_grid, selected_cell)
     global_undo = Undo(test_grid, selected_cell)
+    obj_draw_ui = graphics.DrawUI(SudokuSurface, UICoord)
 
     GameBoard = graphics.DrawBoard(SudokuSurface, UICoord)
     GameBoard.draw_complete_frame(test_grid, clock_obj.generate_clock_str())
@@ -97,5 +98,8 @@ if __name__ == "__main__":
         elif event.type == const.ID_UNDO_POP:
             global_undo.pop()
             #print("sel_cell = [%d, %d]" % (selected_cell[0], selected_cell[1]))
+
+        elif event.type == const.ID_DRAW_TOGGLE:
+            obj_draw_ui.draw_toggle(event.is_active)
 
     pygame.quit()

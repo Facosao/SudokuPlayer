@@ -228,3 +228,27 @@ class DrawBoard:
         self.draw_clock(clock_str)
 
         return pygame.event.post(const.EVENT_FLIP_BUFFER)
+
+
+class DrawUI:
+
+    def __init__(self, surface, ui_coord):
+        self.surface: pygame.Surface = surface
+        self.coord: UICoordinates = ui_coord
+        self.font_path: str = "SourceSansPro-Regular.ttf"
+
+    def draw_toggle(self, is_active):
+
+        if is_active is True:
+            string = "toggle is on"
+        else:
+            string = "toggle is off"
+
+        font = pygame.font.Font(self.font_path, 20)
+        new_surface = font.render(string, True, const.COLOR_BLACK, const.COLOR_WHITE)
+        font_x, font_y = font.size(string)
+        top = self.coord.screen_y - font_y
+        rect = pygame.Rect(0, top, font_x, font_y)
+        self.surface.blit(new_surface, rect)
+
+        pygame.event.post(const.EVENT_FLIP_BUFFER)

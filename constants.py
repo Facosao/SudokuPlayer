@@ -39,6 +39,7 @@ ID_MOVE_SEL_CELL = pygame.USEREVENT + 10
 ID_INSERTED_NUMBER = pygame.USEREVENT + 11
 ID_UNDO_PUSH = pygame.USEREVENT + 12
 ID_UNDO_POP = pygame.USEREVENT + 13
+ID_DRAW_TOGGLE = pygame.USEREVENT + 14
 
 # Pygame user event object
 EVENT_UPDATE_TIMER = pygame.event.Event(ID_UPDATE_TIMER)
@@ -53,6 +54,7 @@ EVENT_DELETE_CELL = pygame.event.Event(ID_DELETE_CELL)
 # EVENT_INSERTED_NUMBER   -> Created from CellManager
 # EVENT_UNDO_PUSH         -> Created from CellManager
 EVENT_UNDO_POP = pygame.event.Event(ID_UNDO_POP)
+# EVENT_DRAW_TOGGLE       -> Created from KeyboardHandler
 
 # Demo game (Testing only)
 DEMO_GAME = [[0, 0, 6, 2, 0, 0, 0, 0, 5],

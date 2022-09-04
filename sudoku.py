@@ -44,6 +44,8 @@ class HighlightCells:
     def __init__(self, grid: list, selected_cell: list) -> None:
         self.grid: list = grid
         self.selected_cell: list = selected_cell
+        self.count = 0
+        self.inner_count = 0
 
     ''' 
         When a cell is deleted, create a event to restore
@@ -54,6 +56,8 @@ class HighlightCells:
 
         selected_row = self.selected_cell[0]
         selected_column = self.selected_cell[1]
+        self.count = 0
+        self.inner_count = 0
 
         self.__reset_all_cells_bg()
 
@@ -64,21 +68,18 @@ class HighlightCells:
             if sel_cell.value == 0:
 
                 self.__set_rule_highlight(sel_cell)
-                if mark != 0:
-                    self.__check_inserted_mark(sel_cell, mark)
                 sel_cell.is_selected()
 
             else:
 
                 self.__set_blocked_cells(sel_cell)
                 self.__same_number_highlight(sel_cell)
-                self.__check_marks_against_number(sel_cell)
                 sel_cell.is_selected()
-
                 self.__check_for_errors(sel_cell)
 
-            #self.__check_for_pencil_mark_errors(sel_cell)
-
+        self.__super_check_mark()
+        print("count =", self.count)
+        print("inner_count =", self.inner_count)
         return pygame.event.post(const.EVENT_REDRAW_CELLS)
 
     def __reset_all_cells_bg(self) -> None:
@@ -95,8 +96,8 @@ class HighlightCells:
                     cell.fg_color = const.COLOR_USER_NUMBER
 
                 for mark in cell.pencil_marks:
-                    if mark.FG_color != const.COLOR_INVALID_NUMBER_FG:
-                        mark.FG_color = const.COLOR_PENCIL_MARK
+                    # if mark.FG_color != const.COLOR_INVALID_NUMBER_FG:
+                    mark.FG_color = const.COLOR_PENCIL_MARK
 
     def __set_rule_highlight(self, cell) -> None:
 
@@ -186,132 +187,56 @@ class HighlightCells:
         elif error_detected is False and sel_cell.starting is False:
             sel_cell.fg_color = const.COLOR_USER_NUMBER
 
-    def __check_inserted_mark(self, cell, mark):
+    def __check_single_mark(self, cell, mark):
 
-        index = mark - 1
-        cell.pencil_marks[index].FG_color = const.COLOR_PENCIL_MARK
-        error_detected = False
-
-        # Same row
-        for column in range(9):
-            check_cell = self.grid[cell.row_index][column]
-
-            if check_cell.value == mark:
-                error_detected = True
-
-        # Same column
-        for row in range(9):
-            check_cell = self.grid[row][cell.column_index]
-
-            if check_cell.value == mark:
-                error_detected = True
-
-        # Same 3x3 sub-grid (sg)
-        sg_row_start = (cell.row_index // 3) * 3
-        sg_row_end = sg_row_start + 3
-
-        sg_column_start = (cell.column_index // 3) * 3
-        sg_column_end = sg_column_start + 3
-
-        for i in range(sg_row_start, sg_row_end):
-            for j in range(sg_column_start, sg_column_end):
-
-                check_cell = self.grid[i][j]
-
-                if check_cell.value == mark:
-                    error_detected = True
-
-        if error_detected:
-            cell.pencil_marks[index].FG_color = const.COLOR_INVALID_NUMBER_FG
-
-    def __check_marks_against_number(self, cell):
-
-        index = cell.value - 1
+        print("Starting single mark check")
+        print("mark value =", mark.value, "cell_row: =", cell.row_index, "cell_col =", cell.column_index)
 
         # Same row
         for column in range(9):
-            check_mark = self.grid[cell.row_index][column].pencil_marks[index]
-
-            if check_mark.value == cell.value:
-                check_mark.FG_color = const.COLOR_INVALID_NUMBER_FG
-            else:
-                check_mark.FG_color = const.COLOR_PENCIL_MARK
-
-        # Same column
-        for row in range(9):
-            check_mark = self.grid[row][cell.column_index].pencil_marks[index]
-
-            if check_mark.value == cell.value:
-                check_mark.FG_color = const.COLOR_INVALID_NUMBER_FG
-            else:
-                check_mark.FG_color = const.COLOR_PENCIL_MARK
-
-        # Same 3x3 sub-grid (sg)
-        sg_row_start = (cell.row_index // 3) * 3
-        sg_row_end = sg_row_start + 3
-
-        sg_column_start = (cell.column_index // 3) * 3
-        sg_column_end = sg_column_start + 3
-
-        for i in range(sg_row_start, sg_row_end):
-            for j in range(sg_column_start, sg_column_end):
-
-                check_mark = self.grid[i][j].pencil_marks[index]
-
-                if check_mark.value == cell.value:
-                    check_mark.FG_color = const.COLOR_INVALID_NUMBER_FG
-                else:
-                    check_mark.FG_color = const.COLOR_PENCIL_MARK
-
-    # Currently unused
-    def __check_for_pencil_mark_errors(self, cell):
-
-        # for row in self.grid:
-        #    for cell in row:
-
-        for i in range(9):
-
-            mark = cell.pencil_marks[i]
-
-            if mark.value == 0:
-                continue
-
-            error_detected = False
-
-            # Same row
-            for column in range(9):
-
-                test_cell = self.grid[cell.row_index][column]
-
-                if test_cell.value == mark.value and \
-                        test_cell.column_index != cell.column_index:
-                    error_detected = True
-
-            # Same column
-            for row in range(9):
-
-                test_cell = self.grid[row][cell.column_index]
-
-                if test_cell.value == mark.value and \
-                        test_cell.row_index != cell.row_index:
-                    error_detected = True
-
-            # Same 3x3 sub-grid (sg)
-            sg_row_start = (cell.row_index // 3) * 3
-            sg_row_end = sg_row_start + 3
-
-            sg_column_start = (cell.column_index // 3) * 3
-            sg_column_end = sg_column_start + 3
-
-            for i in range(sg_row_start, sg_row_end):
-                for j in range(sg_column_start, sg_column_end):
-
-                    test_cell = self.grid[i][j]
-
-                    if test_cell.value == mark.value and \
-                            test_cell.row_index != cell.row_index:
-                        error_detected = True
-
-            if error_detected:
-                print("Mark error detected! value =", mark.value)
+            test_cell = self.grid[cell.row_index][column]
+            self.inner_count += 1
+            if (mark.value == test_cell.value) and (test_cell.value != 0):
                 mark.FG_color = const.COLOR_INVALID_NUMBER_FG
+                print("Row error!")
+                print("cell.row_index =", cell.row_index, "column =", column)
+                print("test_cell_row =", test_cell.row_index, "test_cell_col =", test_cell.column_index)
+                return
+
+        # Same column
+        for row in range(9):
+            test_cell = self.grid[row][cell.column_index]
+            self.inner_count += 1
+            if (mark.value == test_cell.value) and (test_cell.value != 0):
+                mark.FG_color = const.COLOR_INVALID_NUMBER_FG
+                print("Column error!")
+                print("test_cell_row =", test_cell.row_index, "test_cell_col =", test_cell.column_index)
+                return
+
+        sg_row_start = (cell.row_index // 3) * 3
+        sg_row_end = sg_row_start + 3
+
+        sg_column_start = (cell.column_index // 3) * 3
+        sg_column_end = sg_column_start + 3
+
+        for i in range(sg_row_start, sg_row_end):
+            for j in range(sg_column_start, sg_column_end):
+                test_cell = self.grid[i][j]
+                self.inner_count += 1
+                if (mark.value == test_cell.value) and (test_cell.value != 0):
+                    mark.FG_color = const.COLOR_INVALID_NUMBER_FG
+                    print("Sub-grid error!")
+                    print("test_cell_row =", test_cell.row_index, "test_cell_col =", test_cell.column_index)
+                    return
+
+    def __super_check_mark(self):
+
+        for row in self.grid:
+            for cell in row:
+
+                if cell.value != 0:
+                    continue
+                self.count += 1
+                for mark in cell.pencil_marks:
+                    if mark.value != 0 and (mark.FG_color == const.COLOR_PENCIL_MARK):
+                        self.__check_single_mark(cell, mark)

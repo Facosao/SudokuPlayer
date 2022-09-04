@@ -31,7 +31,8 @@ def generate_grid() -> list:
 
         for j in range(9):
 
-            cell_value = const.DEMO_GAME[i][j]
+            #cell_value = const.DEMO_GAME[i][j]
+            cell_value = const.DEMO_GAME_2[i][j]
             new_cell = Cell(cell_value)
 
             new_cell.row_index = i

@@ -2,7 +2,7 @@ import pygame
 import constants as const
 from sudoku import Cell
 
-SCREEN_RES = (SCREEN_WIDTH, SCREEN_HEIGHT) = (720, 576)
+SCREEN_RES = (SCREEN_WIDTH, SCREEN_HEIGHT) = (800, 600)
 SUDOKU_RECT = (SUDOKU_WIDTH, SUDOKU_HEIGHT) = (509, 509)
 # DEFAULT GRID SIZE IN PIXELS = 509
 

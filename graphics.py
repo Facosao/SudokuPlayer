@@ -25,7 +25,27 @@ class UICoordinates:
     def get_grid_size(self) -> int:
 
         # Change to be dynamic
-        return 509
+        #return 509
+
+        size = int((self.screen_x * 66.28) // 100)
+
+        if float((size - 14) / 9).is_integer():
+            return size
+        else:
+            upper = size
+            lower = size
+            while True:
+                upper += 1
+                lower -= 1
+                if float((lower - 14) / 9).is_integer():
+                    size = lower
+                    break
+                if float((upper - 14) / 9).is_integer():
+                    size = upper
+                    break
+
+        print("grid size =", size)
+        return size
 
     def get_grid_position(self) -> Tuple[int, int]:
 

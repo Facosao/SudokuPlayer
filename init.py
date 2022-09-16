@@ -12,7 +12,7 @@ def global_init():
     pygame.init()
     pygame.font.init()
 
-    sudoku_surface = pygame.display.set_mode(SCREEN_RES)
+    sudoku_surface = pygame.display.set_mode(SCREEN_RES, pygame.RESIZABLE)
 
     pygame.display.set_caption("Sudoku Player")
     pygame.event.set_blocked(pygame.MOUSEMOTION)

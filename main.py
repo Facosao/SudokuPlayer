@@ -23,7 +23,7 @@ if __name__ == "__main__":
     SudokuSurface = init.global_init()
 
     test_grid = init.generate_grid()
-    UICoord = graphics.UICoordinates(SCREEN_WIDTH, SCREEN_HEIGHT, test_grid)
+    UICoord = graphics.UICoordinates(test_grid)
 
     clock_obj = Clock()
     selected_cell = [-1, -1]
@@ -34,9 +34,9 @@ if __name__ == "__main__":
     Keyboard_Handler = KeyboardHandler(test_grid, selected_cell)
     Cell_Manager = CellManager(test_grid, selected_cell)
     global_undo = Undo(test_grid, selected_cell)
-    obj_draw_ui = graphics.DrawUI(SudokuSurface, UICoord)
+    obj_draw_ui = graphics.DrawUI(UICoord)
 
-    GameBoard = graphics.DrawBoard(SudokuSurface, UICoord)
+    GameBoard = graphics.DrawBoard(UICoord)
     GameBoard.draw_complete_frame(test_grid, clock_obj.generate_clock_str())
 
     running = True
@@ -58,6 +58,14 @@ if __name__ == "__main__":
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             Mouse_Handler.try_all_regions(event.button, event.pos)
+
+        elif event.type == pygame.VIDEORESIZE:
+            SudokuSurface = pygame.display.set_mode(event.size, pygame.RESIZABLE)
+            UICoord = graphics.UICoordinates(test_grid)
+            #Mouse_Handler = MouseHandler(test_grid, UICoord, selected_cell)
+            #obj_draw_ui = graphics.DrawUI(UICoord)
+            #GameBoard = graphics.DrawBoard(UICoord)
+            GameBoard.draw_complete_frame(test_grid, clock_obj.generate_clock_str())
 
         # ----- User events -----
 

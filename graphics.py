@@ -5,10 +5,10 @@ import constants as const
 
 class UICoordinates:
 
-    def __init__(self, screen_res_x, screen_res_y, sudoku_matrix) -> None:
+    def __init__(self, sudoku_matrix) -> None:
 
-        self.screen_x = screen_res_x
-        self.screen_y = screen_res_y
+        self.surface = pygame.display.get_surface()
+        self.screen_x, self.screen_y = self.surface.get_size()
 
         self.grid_size = self.get_grid_size()
         self.grid_x, self.grid_y = self.get_grid_position()
@@ -27,7 +27,14 @@ class UICoordinates:
         # Change to be dynamic
         #return 509
 
-        size = int((self.screen_x * 66.28) // 100)
+        if self.screen_x < self.screen_y:
+            #lower = (3 * self.screen_x) / 4  # lower y
+            res = self.screen_x
+        else:
+            #lower = (4 * self.screen_y) / 3  # lower x
+            res = (4 * self.screen_y) / 3
+
+        size = int((res * 66.28) // 100)
 
         if float((size - 14) / 9).is_integer():
             return size
@@ -79,9 +86,9 @@ class UICoordinates:
 
 class DrawBoard:
 
-    def __init__(self, surface, ui_coord) -> None:
+    def __init__(self, ui_coord) -> None:
 
-        self.surface: pygame.Surface = surface
+        self.surface: pygame.Surface = pygame.display.get_surface()
         self.coord: UICoordinates = ui_coord
 
         self.font_path: str = "SourceSansPro-Regular.ttf"
@@ -252,8 +259,8 @@ class DrawBoard:
 
 class DrawUI:
 
-    def __init__(self, surface, ui_coord):
-        self.surface: pygame.Surface = surface
+    def __init__(self, ui_coord):
+        self.surface: pygame.Surface = pygame.display.get_surface()
         self.coord: UICoordinates = ui_coord
         self.font_path: str = "SourceSansPro-Regular.ttf"
 

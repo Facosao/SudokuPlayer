@@ -62,9 +62,9 @@ if __name__ == "__main__":
         elif event.type == pygame.VIDEORESIZE:
             SudokuSurface = pygame.display.set_mode(event.size, pygame.RESIZABLE)
             UICoord = graphics.UICoordinates(test_grid)
-            #Mouse_Handler = MouseHandler(test_grid, UICoord, selected_cell)
-            #obj_draw_ui = graphics.DrawUI(UICoord)
-            #GameBoard = graphics.DrawBoard(UICoord)
+            Mouse_Handler = MouseHandler(test_grid, UICoord, selected_cell)
+            obj_draw_ui = graphics.DrawUI(UICoord)
+            GameBoard = graphics.DrawBoard(UICoord)
             GameBoard.draw_complete_frame(test_grid, clock_obj.generate_clock_str())
 
         # ----- User events -----
@@ -100,12 +100,10 @@ if __name__ == "__main__":
             Highlight_Cells.all_cells(event.mark)
 
         elif event.type == const.ID_UNDO_PUSH:
-            #print("event cell =", event.old_cell.value)
             global_undo.push(event.old_cell)
 
         elif event.type == const.ID_UNDO_POP:
             global_undo.pop()
-            #print("sel_cell = [%d, %d]" % (selected_cell[0], selected_cell[1]))
 
         elif event.type == const.ID_DRAW_TOGGLE:
             obj_draw_ui.draw_toggle(event.is_active)

@@ -1,3 +1,4 @@
+import os
 import pygame
 from typing import Tuple
 import constants as const
@@ -51,7 +52,7 @@ class UICoordinates:
                     size = upper
                     break
 
-        print("grid size =", size)
+        #print("grid size =", size)
         return size
 
     def get_grid_position(self) -> Tuple[int, int]:
@@ -92,6 +93,28 @@ class DrawBoard:
         self.coord: UICoordinates = ui_coord
 
         self.font_path: str = "SourceSansPro-Regular.ttf"
+        self.cell_font_size = self.__get_cell_font_size()
+
+    def __get_cell_font_size(self) -> int:
+
+        font_size = 0
+        font_height = 1
+        #file = os.open("log.txt", (os.O_RDWR | os.O_CREAT))
+        
+        while font_height < self.coord.cell_size:
+            font_size += 1
+            font = pygame.font.Font(self.font_path, font_size)
+            font_width, font_height = font.size("1")
+            #print("Cell size =", self.coord.cell_size, "Font height =", font_height)
+            #log_str = "Cell_size = " + str(self.coord.cell_size) + "Font height = " + str(font_height) + "\n"
+            #os.write(file, log_str.encode())
+
+        #os.close(file)
+
+        if font_height > self.coord.cell_size:
+            font_size -= 1
+
+        return font_size
 
     def __draw_empty_grid(self) -> None:
 
@@ -157,6 +180,7 @@ class DrawBoard:
     def draw_cells(self, grid: list):
 
         cell_size = self.coord.cell_size
+        font = pygame.font.Font(self.font_path, self.cell_font_size)
 
         for row in grid:
             for cell in row:
@@ -176,10 +200,10 @@ class DrawBoard:
                     continue
 
                 # Change font size to be dynamic
-                font = pygame.font.Font(self.font_path, 43)
                 surface = font.render(digit, True, fg_color, bg_color)
 
                 font_width, font_height = font.size(digit)
+                #print("Cell size =", self.coord.cell_size, "Font width =", font_width, "Font height =", font_height)
 
                 centered_x = x + ((cell_size - font_width) // 2)
                 centered_y = y + ((cell_size - font_height) // 2)  # + 2

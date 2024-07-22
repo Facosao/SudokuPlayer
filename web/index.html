@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Sudoku Player</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='styles.css'>
+    <script src='dist/main.js'></script>
+</head>
+<body>
+    <div class="game">
+        <div class="box">
+            <div class="pencil-mark">
+                <span>1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>5</span>
+                <span>6</span>
+                <span>7</span>
+                <span>8</span>
+                <span>9</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="cell">
+                <span>1</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="cell">
+                <span>1</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="cell">
+                <span>1</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="cell">
+                <span>1</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="cell">
+                <span>1</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="cell">
+                <span>1</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="cell">
+                <span>1</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+        <div class="box">
+            <div class="cell">
+                <span>1</span>
+            </div>
+            <div class="cell">
+                <span>2</span>
+            </div>
+            <div class="cell">
+                <span>3</span>
+            </div>
+            <div class="cell">
+                <span>4</span>
+            </div>
+            <div class="cell">
+                <span>5</span>
+            </div>
+            <div class="cell">
+                <span>6</span>
+            </div>
+            <div class="cell">
+                <span>7</span>
+            </div>
+            <div class="cell">
+                <span>8</span>
+            </div>
+            <div class="cell">
+                <span>9</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
